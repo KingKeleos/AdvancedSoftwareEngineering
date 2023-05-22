@@ -1,2 +1,4 @@
 rootProject.name = 'ASE'
+include 'src:main:AFV'
+findProject(':src:main:AFV')?.name = 'AFV'
 
