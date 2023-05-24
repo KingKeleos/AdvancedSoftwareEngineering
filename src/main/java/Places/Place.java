@@ -1,5 +1,7 @@
 package Places;
 
+import java.util.*;
+
 public abstract class Place  implements PlaceInterface{
     private final String ID;
     private final double longitude;
@@ -26,5 +28,24 @@ public abstract class Place  implements PlaceInterface{
     @Override
     public double getDistance(Place place) {
         return Math.sqrt((this.getLongitude()-place.getLongitude())+(this.getLatitude()-place.getLatitude()));
+    }
+
+    public static List<Customer> getCusomers(List<Place> places){
+        List <Customer> customers = new ArrayList<>();
+        for (Place p : places){
+            if (p.getClass() == Customer.class){
+                customers.add((Customer) p);
+            }
+        }
+        return customers;
+    }
+
+    public static Depot getDepot(List<Place> places){
+        for (Place p : places){
+            if (p.getClass() == Depot.class){
+                return (Depot) p;
+            }
+        }
+        return null;
     }
 }

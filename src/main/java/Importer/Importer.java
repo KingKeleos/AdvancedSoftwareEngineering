@@ -33,4 +33,14 @@ public class Importer {
         }
         return pl;
     }
+
+    public static Depot getDepot(List<Place> places){
+        for (Place p : places){
+            if (p.getClass() == Depot.class){
+                return (Depot) p;
+            }
+        }
+        System.out.println("Couldn't find a Depot!");
+        return null;
+    }
 }
