@@ -1,16 +1,14 @@
 package Places;
 
-public class Places {
+public abstract class Place  implements PlaceInterface{
     private final String ID;
     private final double longitude;
     private final double latitude;
-    private final String Type;
 
-    public Places(String ID, double longitude, double latitude, String Type){
+    public Place(String ID, double longitude, double latitude){
         this.ID = ID;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.Type = Type;
     }
 
     public String getID(){
@@ -25,7 +23,8 @@ public class Places {
         return this.latitude;
     }
 
-    public String getType(){
-        return this.Type;
+    @Override
+    public double getDistance(Place place) {
+        return Math.sqrt((this.getLongitude()-place.getLongitude())+(this.getLatitude()-place.getLatitude()));
     }
 }

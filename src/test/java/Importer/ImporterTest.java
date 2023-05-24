@@ -1,6 +1,6 @@
 package Importer;
 
-import Places.Places;
+import Places.Place;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,16 +11,15 @@ public class ImporterTest {
     @Test
     void testImport(){
         //Execute Testing Method
-        List<Places> placesList = Importer.importFile();
+        List<Place> placeList = Importer.importFile();
 
         //placesList should not be Null
-        assertNotNull(placesList);
+        assertNotNull(placeList);
         //placesList should have the 31 places in the file
-        assertEquals(31, placesList.size());
+        assertEquals(31, placeList.size());
         //placesList[1] should have all data set
-        assertNotNull(placesList.get(0).getID());
-        assertNotEquals(0.0, placesList.get(0).getLatitude());
-        assertNotEquals(0.0, placesList.get(0).getLongitude());
-        assertNotNull(placesList.get(0).getType());
+        assertNotNull(placeList.get(0).getID());
+        assertNotEquals(0.0, placeList.get(0).getLatitude());
+        assertNotEquals(0.0, placeList.get(0).getLongitude());
     }
 }
