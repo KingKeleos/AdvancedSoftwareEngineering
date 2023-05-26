@@ -27,7 +27,9 @@ public abstract class Place  implements PlaceInterface{
 
     @Override
     public double getDistance(Place place) {
-        return Math.sqrt((this.getLongitude()-place.getLongitude())+(this.getLatitude()-place.getLatitude()));
+        double distanceA = this.getLongitude()-place.getLongitude();
+        double distanceB = this.getLatitude()-place.getLatitude();
+        return Math.sqrt(Math.pow(distanceA, 2.0)+Math.pow(distanceB, 2.0));
     }
 
     public static List<Customer> getCusomers(List<Place> places){
@@ -47,5 +49,15 @@ public abstract class Place  implements PlaceInterface{
             }
         }
         return null;
+    }
+
+    public static List<Fuelstation> getFuelstations(List<Place> places){
+        List <Fuelstation> fuelstations = new ArrayList<>();
+        for (Place p : places){
+            if (p.getClass() == Fuelstation.class){
+                fuelstations.add((Fuelstation) p);
+            }
+        }
+        return fuelstations;
     }
 }

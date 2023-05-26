@@ -7,12 +7,10 @@ import Vehicle.AFV;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BruteForce {
-    private List<AFV> vehicles = new ArrayList<>();
-    private List<Place> places;
+public class BruteForce{
+    private final List<AFV> vehicles = new ArrayList<>();
 
     public BruteForce(List<Place> places, List<Customer> customers, int amount){
-        this.places = places;
         createVehicles(amount, places);
 
         while (customers.size() > 0){
@@ -25,12 +23,15 @@ public class BruteForce {
     }
 
     public void start(){
-
+        for (AFV v : vehicles){
+            System.out.println("Created Vehicle " + v + " with Route: " + v.getCustomers());
+            v.start();
+        }
     }
 
     private void createVehicles(int amount, List<Place> places){
         for (int i = 0; i < amount; i++){
-            this.vehicles.add(new AFV(places, Place.getDepot(places)));
+            this.vehicles.add(new AFV(places, Place.getDepot(places), Place.getFuelstations(places)));
         }
     }
 }

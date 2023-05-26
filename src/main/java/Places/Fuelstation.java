@@ -8,6 +8,6 @@ public class Fuelstation extends Place {
     }
 
     public void Refuel(AFV vehicle){
-
+        vehicle.refuel();
     }
 }
