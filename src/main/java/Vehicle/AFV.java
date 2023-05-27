@@ -1,13 +1,14 @@
 package Vehicle;
 
-import Places.*;
+import Places.Customer;
+import Places.Depot;
+import Places.Fuelstation;
+import Places.Place;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Random;
 import java.time.LocalTime;
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class AFV extends Thread implements Driver {
     public int ID;
@@ -19,6 +20,7 @@ public class AFV extends Thread implements Driver {
     private final List<Place> route = new ArrayList<>();
     private Customer goal;
     private LocalTime tourTime;
+    private Random rand = new Random();
 
     public AFV(int ID, List<Place> places, Depot depot, List<Fuelstation> fuelstations){
         this.ID = ID;
@@ -69,67 +71,47 @@ public class AFV extends Thread implements Driver {
         if (this.goal != null){
             return;
         }
-        Customer next = customers.get(0);
-        for (Customer c : customers){
-            if (this.currentPosition.getDistance(c) < this.currentPosition.getDistance(next)){
-                next = c;
-            }
-        }
-        double distance = this.currentPosition.getDistance(next);
-        this.goal = next;
+        this.goal = customers.get(rand.nextInt(this.customers.size()));
+        double distance = this.currentPosition.getDistance(this.goal);
         if (distance  * Configurations.AFV.consumptionPerMile < this.tank){
-            this.drive(this.goal);
-        }
-        else {
+            for (Fuelstation f : this.fuelstations){
+                double rest = distance  * Configurations.AFV.consumptionPerMile;
+                double fuelDistance = this.goal.getDistance(f);
+                if (fuelDistance  * Configurations.AFV.consumptionPerMile < (this.tank - rest)){
+                    this.drive(this.goal);
+                    return;
+                }
+            }
             selectFuelstation();
         }
     }
 
     @Override
     public void run(){
-        for (long i = 0; i < 1000000000; i++){
+        while (customers.size() > 0){
             this.goal = null;
-            if (customers.size() > 0){
-                this.selectCustomer();
-            }
-            else {
-                System.out.println("Vehicle " + this.ID + " finished the tour in " + this.tourTime + " with Route:" + this.route);
-                break;
+            this.selectCustomer();
+            if(this.tank < this.currentPosition.getDistance(this.goal) * Configurations.AFV.consumptionPerMile){
+                selectFuelstation();
             }
         }
+
     }
 
     public void selectFuelstation(){
         for (Fuelstation f : fuelstations){
             double rest = this.currentPosition.getDistance(f) * Configurations.AFV.consumptionPerMile;
             if (rest < this.tank) {
-                if (f.getDistance(goal) * Configurations.AFV.consumptionPerMile < 60.0){
-                    this.drive(f);
-                    f.Refuel(this);
-                    this.route.add(f);
-                    this.tourTime = this.tourTime.plusMinutes(15);
-                    return;
-                }
-                else{
-                    Place closestGoal = this.placeList.get(0);
-                    Place closestCurr = this.placeList.get(0);
-                    Place newGoal;
-                    for (Place p : placeList){
-                        if(route.contains(p)){
-                            continue;
-                        }
-                        if (p.getDistance(goal) < closestGoal.getDistance(goal)){
-                            closestGoal = p;
-                            if (p.getDistance(currentPosition) < closestCurr.getDistance(currentPosition)){
-                                closestCurr = p;
-                                newGoal = p;
-                            }
-                        }
-                        this.drive(p);
-                    }
-                }
+                this.drive(f);
+                f.Refuel(this);
+                this.route.add(f);
+                this.tourTime = this.tourTime.plusMinutes(15);
+                return;
             }
-
         }
+    }
+
+    public LocalTime getTourTime(){
+        return this.tourTime;
     }
 }
