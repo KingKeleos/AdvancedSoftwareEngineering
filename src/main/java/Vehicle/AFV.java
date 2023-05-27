@@ -15,7 +15,6 @@ public class AFV extends Thread implements Driver {
     private final List<Customer> customers = new ArrayList<>();
     private final List<Fuelstation> fuelstations;
     private Place currentPosition;
-    private final Random rand = new Random();
     private final List<Place> route = new ArrayList<>();
     private Customer goal;
     private LocalTime tourTime;
@@ -23,8 +22,10 @@ public class AFV extends Thread implements Driver {
     public AFV(List<Place> places, Depot depot, List<Fuelstation> fuelstations){
         this.currentPosition = depot;
         this.tank = Configurations.AFV.maxVolume;
+        // Vehicles can travel through all places
         this.placeList = places;
-        this.tourTime = LocalTime.of(0, 0);
+        // Refuel Time at depot as start time from specification
+        this.tourTime = LocalTime.of(0, 15);
         this.fuelstations = fuelstations;
     }
 
@@ -38,6 +39,7 @@ public class AFV extends Thread implements Driver {
     public void drive(Place next) {
         double distance = this.currentPosition.getDistance(goal);
         this.consume(distance);
+        this.tourTime = this.tourTime.plusMinutes((long)distance / Configurations.AFV.maxSpeed);
         this.route.add(this.goal);
         this.currentPosition = next;
         this.checkCustomer();
@@ -65,7 +67,12 @@ public class AFV extends Thread implements Driver {
         if (this.goal != null){
             return;
         }
-        Customer next = this.customers.get(rand.nextInt(customers.size()));
+        Customer next = customers.get(0);
+        for (Customer c : customers){
+            if (this.currentPosition.getDistance(c) > this.currentPosition.getDistance(next)){
+                next = c;
+            }
+        }
         double distance = this.currentPosition.getDistance(next);
         if (distance  * Configurations.AFV.consumptionPerMile < this.tank){
             this.goal = next;
