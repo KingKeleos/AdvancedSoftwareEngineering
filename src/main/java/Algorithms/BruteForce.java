@@ -24,14 +24,14 @@ public class BruteForce{
 
     public void start(){
         for (AFV v : vehicles){
-            System.out.println("Created Vehicle " + v + " with Route: " + v.getCustomers());
+            System.out.println("Created Vehicle " + v.ID + " with Route: " + v.getCustomers());
             v.start();
         }
     }
 
     private void createVehicles(int amount, List<Place> places){
         for (int i = 0; i < amount; i++){
-            this.vehicles.add(new AFV(places, Place.getDepot(places), Place.getFuelstations(places)));
+            this.vehicles.add(new AFV(i, places, Place.getDepot(places), Place.getFuelstations(places)));
         }
     }
 }

@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class AFV extends Thread implements Driver {
+    public int ID;
     private double tank;
     private final List<Place> placeList;
     private final List<Customer> customers = new ArrayList<>();
@@ -19,7 +20,8 @@ public class AFV extends Thread implements Driver {
     private Customer goal;
     private LocalTime tourTime;
 
-    public AFV(List<Place> places, Depot depot, List<Fuelstation> fuelstations){
+    public AFV(int ID, List<Place> places, Depot depot, List<Fuelstation> fuelstations){
+        this.ID = ID;
         this.currentPosition = depot;
         this.tank = Configurations.AFV.maxVolume;
         // Vehicles can travel through all places
@@ -32,7 +34,6 @@ public class AFV extends Thread implements Driver {
     @Override
     public void consume(double distance) {
         this.tank = this.tank - (distance * Configurations.AFV.consumptionPerMile);
-        System.out.println("Vehicle " + this + " has " +this.tank+ " left");
     }
 
     @Override
@@ -53,6 +54,7 @@ public class AFV extends Thread implements Driver {
     @Override
     public void checkCustomer() {
         if (this.currentPosition.getClass() == Customer.class){
+            this.tourTime = this.tourTime.plusMinutes(30);
             this.customers.remove(this.currentPosition);
         }
     }
@@ -69,15 +71,17 @@ public class AFV extends Thread implements Driver {
         }
         Customer next = customers.get(0);
         for (Customer c : customers){
-            if (this.currentPosition.getDistance(c) > this.currentPosition.getDistance(next)){
+            if (this.currentPosition.getDistance(c) < this.currentPosition.getDistance(next)){
                 next = c;
             }
         }
         double distance = this.currentPosition.getDistance(next);
+        this.goal = next;
         if (distance  * Configurations.AFV.consumptionPerMile < this.tank){
-            this.goal = next;
-            System.out.println("Vehicle " +this+ " chose " +this.goal);
             this.drive(this.goal);
+        }
+        else {
+            selectFuelstation();
         }
     }
 
@@ -86,16 +90,10 @@ public class AFV extends Thread implements Driver {
         for (long i = 0; i < 1000000000; i++){
             this.goal = null;
             if (customers.size() > 0){
-                if (goal == null){
-                    this.selectCustomer();
-                    if (this.goal == null){
-                        this.selectFuelstation();
-                    }
-                }
-                System.out.println(i+" Vehicle tour: " + this.route);
+                this.selectCustomer();
             }
             else {
-                System.out.println("Vehicle" + this + "finished the tour in " + this.tourTime);
+                System.out.println("Vehicle " + this.ID + " finished the tour in " + this.tourTime + " with Route:" + this.route);
                 break;
             }
         }
@@ -103,15 +101,35 @@ public class AFV extends Thread implements Driver {
 
     public void selectFuelstation(){
         for (Fuelstation f : fuelstations){
-            if (this.route.contains(f)){
-                break;
+            double rest = this.currentPosition.getDistance(f) * Configurations.AFV.consumptionPerMile;
+            if (rest < this.tank) {
+                if (f.getDistance(goal) * Configurations.AFV.consumptionPerMile < 60.0){
+                    this.drive(f);
+                    f.Refuel(this);
+                    this.route.add(f);
+                    this.tourTime = this.tourTime.plusMinutes(15);
+                    return;
+                }
+                else{
+                    Place closestGoal = this.placeList.get(0);
+                    Place closestCurr = this.placeList.get(0);
+                    Place newGoal;
+                    for (Place p : placeList){
+                        if(route.contains(p)){
+                            continue;
+                        }
+                        if (p.getDistance(goal) < closestGoal.getDistance(goal)){
+                            closestGoal = p;
+                            if (p.getDistance(currentPosition) < closestCurr.getDistance(currentPosition)){
+                                closestCurr = p;
+                                newGoal = p;
+                            }
+                        }
+                        this.drive(p);
+                    }
+                }
             }
-            if (this.currentPosition.getDistance(f) * Configurations.AFV.consumptionPerMile < this.tank){
-                this.drive(f);
-                f.Refuel(this);
-                this.route.add(f);
-                return;
-            }
+
         }
     }
 }

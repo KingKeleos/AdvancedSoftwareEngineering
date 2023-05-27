@@ -19,7 +19,7 @@ public class GreenVehicle {
         List<Customer> customers = Place.getCusomers(places);
 
         // Start the Algorithms:
-        BruteForce bruteForce = new BruteForce(places, customers, 5);
+        BruteForce bruteForce = new BruteForce(places, customers, 4);
         bruteForce.start();
     }
 }
