@@ -114,4 +114,8 @@ public class AFV extends Thread implements Driver {
     public LocalTime getTourTime(){
         return this.tourTime;
     }
+
+    public List<Place> getRoute(){
+        return this.route;
+    }
 }

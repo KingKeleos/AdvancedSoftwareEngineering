@@ -1,0 +1,6 @@
+Route with time: 01:15
+	 and route for vehicle 0 with route [Places.Customer@1996cd68, Places.Customer@3339ad8e, Places.Customer@555590, Places.Fuelstation@6d1e7682, Places.Customer@424c0bc4, Places.Customer@555590]
+	 and route for vehicle 1 with route [Places.Customer@3c679bde, Places.Customer@16b4a017, Places.Fuelstation@8807e25, Places.Customer@2a3046da, Places.Customer@16b4a017, Places.Customer@2a098129, Places.Fuelstation@198e2867, Places.Customer@2a098129]
+	 and route for vehicle 2 with route [Places.Customer@12f40c25, Places.Customer@3ada9e37, Places.Customer@5cbc508c, Places.Customer@3419866c]
+	 and route for vehicle 3 with route [Places.Customer@63e31ee, Places.Customer@68fb2c38, Places.Customer@567d299b, Places.Customer@2eafffde, Places.Fuelstation@8807e25, Places.Customer@2eafffde, Places.Fuelstation@6d1e7682, Places.Customer@2eafffde]
+	 and route for vehicle 4 with route [Places.Customer@59690aa4, Places.Customer@6842775d, Places.Customer@574caa3f, Places.Fuelstation@8807e25, Places.Customer@64cee07, Places.Fuelstation@6d1e7682, Places.Customer@574caa3f, Places.Customer@64cee07, Places.Fuelstation@6d1e7682, Places.Customer@64cee07]
