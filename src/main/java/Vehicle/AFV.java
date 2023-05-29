@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AFV extends Thread implements Driver {
+public class AFV implements Driver {
     public int ID;
     private double tank;
     private final List<Place> placeList;
@@ -86,7 +86,6 @@ public class AFV extends Thread implements Driver {
         }
     }
 
-    @Override
     public void run(){
         while (customers.size() > 0){
             this.goal = null;

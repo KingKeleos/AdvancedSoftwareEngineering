@@ -27,12 +27,12 @@ public abstract class Place  implements PlaceInterface{
 
     @Override
     public double getDistance(Place place) {
-        double lat1 = place.getLatitude();
-        double lon2 = place.getLongitude();
+        double lat = place.getLatitude();
+        double lon = place.getLongitude();
         double radiusOfEarth = 3959; // miles, 6371km;
-        double dLat = Math.toRadians(this.latitude-lat1);
-        double dLon = Math.toRadians(lon2-this.longitude);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(this.latitude)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        double dLat = Math.toRadians(lat-this.latitude);
+        double dLon = Math.toRadians(lon-this.longitude);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(Math.toRadians(this.latitude)) * Math.cos(Math.toRadians(lat)) * Math.sin(dLon/2) * Math.sin(dLon/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         return radiusOfEarth * c;
     }

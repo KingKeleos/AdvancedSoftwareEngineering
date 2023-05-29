@@ -1,15 +1,10 @@
 import Algorithms.BruteForce;
-import Configurations.Places;
-import Places.Customer;
-import Places.Depot;
-import Vehicle.AFV;
 import Importer.Importer;
+import Places.Customer;
 import Places.Place;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class GreenVehicle {
 
@@ -20,7 +15,9 @@ public class GreenVehicle {
         List<Customer> customers = Place.getCusomers(places);
 
         // Start the Algorithms:
-        BruteForce bruteForce = new BruteForce(places, customers, 5);
-        bruteForce.start();
+        for (int i=0; i<1000000000; i++) {
+            BruteForce bruteForce = new BruteForce(places, customers, 3);
+            bruteForce.start();
+        }
     }
 }

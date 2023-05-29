@@ -32,7 +32,6 @@ public class BruteForce extends Thread{
 
     @Override
     public void run() {
-        for (int i=0; i<1000000000; i++) {
             createVehicles(this.amount, this.places);
             this.assigned.addAll(this.customers);
             while (this.assigned.size() > 0) {
@@ -44,12 +43,7 @@ public class BruteForce extends Thread{
             }
             LocalTime globalTime = LocalTime.of(0, 0);
             for (AFV v : vehicles) {
-                v.start();
-                try {
-                    v.join();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                v.run();
                 globalTime = globalTime.plusHours(v.getTourTime().getHour()).plusMinutes(v.getTourTime().getMinute());
             }
             if (globalTime.isBefore(this.bestTime) && globalTime.isBefore(Configurations.AFV.maxTime)) {
@@ -61,7 +55,6 @@ public class BruteForce extends Thread{
                 }
             }
             this.vehicles.clear();
-        }
     }
 
     private void createVehicles(int amount, List<Place> places){
