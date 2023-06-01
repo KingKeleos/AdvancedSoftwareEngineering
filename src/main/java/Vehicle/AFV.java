@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AFV implements Driver {
+public class AFV extends Thread implements Driver {
     public int ID;
     private double tank;
     private final List<Place> placeList;
@@ -21,6 +21,7 @@ public class AFV implements Driver {
     private Customer goal;
     private LocalTime tourTime;
     private Random rand = new Random();
+    private Boolean finished = false;
 
     public AFV(int ID, List<Place> places, Depot depot, List<Fuelstation> fuelstations){
         this.ID = ID;
@@ -68,6 +69,9 @@ public class AFV implements Driver {
 
     @Override
     public void selectCustomer() {
+        if (this.tourTime.isAfter(LocalTime.of(10,45))){
+            return;
+        }
         if (this.goal != null){
             return;
         }
@@ -86,18 +90,29 @@ public class AFV implements Driver {
         }
     }
 
+    public Boolean getFinished() {
+        return finished;
+    }
+
+    @Override
     public void run(){
-        while (customers.size() > 0){
+        while (customers.size() > 0 && this.tourTime.isBefore(LocalTime.of(10,45))){
             this.goal = null;
             this.selectCustomer();
             if(this.tank < this.currentPosition.getDistance(this.goal) * Configurations.AFV.consumptionPerMile){
                 selectFuelstation();
             }
         }
-
+        if (this.tourTime.isAfter(LocalTime.of(10,45))){
+            return;
+        }
+        this.finished = true;
     }
 
     public void selectFuelstation(){
+        if (this.tourTime.isAfter(LocalTime.of(10,45))){
+            return;
+        }
         for (Fuelstation f : fuelstations){
             double rest = this.currentPosition.getDistance(f) * Configurations.AFV.consumptionPerMile;
             if (rest < this.tank) {
