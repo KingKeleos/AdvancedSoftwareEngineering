@@ -13,7 +13,6 @@ import java.util.Random;
 public class AFV extends Thread implements Driver {
     public int ID;
     private double tank;
-    private final List<Place> placeList;
     private final List<Customer> customers = new ArrayList<>();
     private final List<Fuelstation> fuelstations;
     private Place currentPosition;
@@ -23,12 +22,10 @@ public class AFV extends Thread implements Driver {
     private Random rand = new Random();
     private Boolean finished = false;
 
-    public AFV(int ID, List<Place> places, Depot depot, List<Fuelstation> fuelstations){
+    public AFV(int ID, Depot depot, List<Fuelstation> fuelstations){
         this.ID = ID;
         this.currentPosition = depot;
         this.tank = Configurations.AFV.maxVolume;
-        // Vehicles can travel through all places
-        this.placeList = places;
         // Refuel Time at depot as start time from specification
         this.tourTime = LocalTime.of(0, 15);
         this.fuelstations = fuelstations;
@@ -44,9 +41,8 @@ public class AFV extends Thread implements Driver {
         double distance = this.currentPosition.getDistance(goal);
         this.consume(distance);
         this.tourTime = this.tourTime.plusMinutes((long)distance / Configurations.AFV.maxSpeed);
-        this.route.add(this.goal);
         this.currentPosition = next;
-        this.checkCustomer();
+        this.route.add(this.currentPosition);
     }
 
     @Override
@@ -102,6 +98,7 @@ public class AFV extends Thread implements Driver {
             if(this.tank < this.currentPosition.getDistance(this.goal) * Configurations.AFV.consumptionPerMile){
                 selectFuelstation();
             }
+            this.checkCustomer();
         }
         if (this.tourTime.isAfter(LocalTime.of(10,45))){
             return;
@@ -118,7 +115,6 @@ public class AFV extends Thread implements Driver {
             if (rest < this.tank) {
                 this.drive(f);
                 f.Refuel(this);
-                this.route.add(f);
                 this.tourTime = this.tourTime.plusMinutes(15);
                 return;
             }

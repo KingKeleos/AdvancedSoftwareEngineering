@@ -68,7 +68,7 @@ public class BruteForce extends Thread{
 
     private void createVehicles(int amount, List<Place> places){
         for (int i = 0; i < amount; i++){
-            this.vehicles.add(new AFV(i, places, Place.getDepot(places), Place.getFuelstations(places)));
+            this.vehicles.add(new AFV(i, Place.getDepot(places), Place.getFuelstations(places)));
         }
     }
 }
