@@ -5,8 +5,6 @@ import Places.Customer;
 import Places.Place;
 import Vehicle.AFV;
 
-import java.io.IOException;
-import java.lang.module.Configuration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +17,12 @@ public class BruteForce extends Thread{
     private final List<Customer> customers;
     private final List<Customer> assigned = new ArrayList<>();
     private final Random rand = new Random();
-    private final Logger logger;
-    private LocalTime bestTime = LocalTime.of(23,59);
+    private LocalTime globalTime = LocalTime.of(0, 0);
 
     public BruteForce(List<Place> places, List<Customer> customers, int amount){
         this.amount = amount;
         this.places = places;
         this.customers = customers;
-
-        this.logger = new Logger();
     }
 
     @Override
@@ -43,18 +38,32 @@ public class BruteForce extends Thread{
             }
             LocalTime globalTime = LocalTime.of(0, 0);
             for (AFV v : vehicles) {
-                v.run();
-                globalTime = globalTime.plusHours(v.getTourTime().getHour()).plusMinutes(v.getTourTime().getMinute());
-            }
-            if (globalTime.isBefore(this.bestTime) && globalTime.isBefore(Configurations.AFV.maxTime)) {
-                this.bestTime = globalTime;
+                v.start();
                 try {
-                    logger.log(globalTime, vehicles);
-                } catch (IOException e) {
+                    v.join();
+                } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+                this.globalTime = globalTime.plusHours(v.getTourTime().getHour()).plusMinutes(v.getTourTime().getMinute());
             }
-            this.vehicles.clear();
+            Boolean allFinished = true;
+            for (AFV v : vehicles) {
+                if (!v.getFinished()) {
+                    allFinished = false;
+                    break;
+                }
+            }
+            if (!allFinished){
+                System.out.println(this + ": Has not finished all routes!");
+            }
+    }
+
+    public LocalTime getGlobal(){
+        return this.globalTime;
+    }
+
+    public List<AFV> getVehicles(){
+        return this.vehicles;
     }
 
     private void createVehicles(int amount, List<Place> places){
