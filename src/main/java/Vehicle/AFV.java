@@ -13,8 +13,7 @@ import java.util.Random;
 public class AFV extends Thread implements Driver {
     public int ID;
     private double tank;
-    private Depot depot;
-    private final List<Place> placeList;
+    private final Depot depot;
     private final List<Customer> customers = new ArrayList<>();
     private final List<Fuelstation> fuelstations;
     private Place currentPosition;
@@ -24,12 +23,10 @@ public class AFV extends Thread implements Driver {
     private final Random rand = new Random();
     private Boolean finished = false;
 
-    public AFV(int ID, List<Place> places, Depot depot, List<Fuelstation> fuelstations){
+    public AFV(int ID, Depot depot, List<Fuelstation> fuelstations){
         this.ID = ID;
         this.depot = depot;
         this.tank = Configurations.AFV.maxVolume;
-        // Vehicles can travel through all places
-        this.placeList = places;
         // Refuel Time at depot as start time from specification
         this.tourTime = LocalTime.of(0, 15);
         this.fuelstations = fuelstations;
@@ -46,9 +43,8 @@ public class AFV extends Thread implements Driver {
         double distance = this.currentPosition.getDistance(goal);
         this.consume(distance);
         this.tourTime = this.tourTime.plusMinutes((long)distance / Configurations.AFV.maxSpeed);
-        this.route.add(this.goal);
         this.currentPosition = next;
-        this.checkCustomer();
+        this.route.add(this.currentPosition);
     }
 
     @Override
@@ -101,6 +97,7 @@ public class AFV extends Thread implements Driver {
             if(this.tank < this.currentPosition.getDistance(this.goal) * Configurations.AFV.consumptionPerMile){
                 selectFuelstation();
             }
+            this.checkCustomer();
         }
         if (customers.size() == 0){
             this.returnToDepot();

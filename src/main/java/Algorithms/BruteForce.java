@@ -46,7 +46,7 @@ public class BruteForce extends Thread{
                 }
                 this.globalTime = globalTime.plusHours(v.getTourTime().getHour()).plusMinutes(v.getTourTime().getMinute());
             }
-            Boolean allFinished = true;
+            boolean allFinished = true;
             for (AFV v : vehicles) {
                 if (!v.getFinished()) {
                     allFinished = false;
@@ -68,7 +68,7 @@ public class BruteForce extends Thread{
 
     private void createVehicles(int amount, List<Place> places){
         for (int i = 0; i < amount; i++){
-            this.vehicles.add(new AFV(i, places, Place.getDepot(places), Place.getFuelstations(places)));
+            this.vehicles.add(new AFV(i, Place.getDepot(places), Place.getFuelstations(places)));
         }
     }
 }
