@@ -22,6 +22,7 @@ public class AFV extends Thread implements Driver {
     private LocalTime tourTime;
     private final Random rand = new Random();
     private Boolean finished = false;
+    private long tourLength;
 
     public AFV(int ID, Depot depot, List<Fuelstation> fuelstations){
         this.ID = ID;
@@ -41,6 +42,7 @@ public class AFV extends Thread implements Driver {
     @Override
     public void drive(Place next) {
         double distance = this.currentPosition.getDistance(goal);
+        this.tourLength = (long)distance;
         this.consume(distance);
         this.tourTime = this.tourTime.plusMinutes((long)distance / Configurations.AFV.maxSpeed);
         this.currentPosition = next;
@@ -100,7 +102,9 @@ public class AFV extends Thread implements Driver {
             this.checkCustomer();
         }
         if (customers.size() == 0){
-            this.returnToDepot();
+            while (this.currentPosition != this.depot){
+                this.returnToDepot();
+            }
         }
         if (this.tourTime.isAfter(LocalTime.of(10,45))){
             return;
@@ -134,6 +138,10 @@ public class AFV extends Thread implements Driver {
 
     public LocalTime getTourTime(){
         return this.tourTime;
+    }
+
+    public long getTourLength(){
+        return tourLength;
     }
 
     public List<Place> getRoute(){

@@ -12,14 +12,19 @@ import java.util.List;
 public class Logger {
 
     public void log(LocalTime time, List<AFV> vehicles) throws IOException {
-        StringBuilder str = new StringBuilder("Route with time: " + time);
+        StringBuilder str = new StringBuilder("{Route with time: " + time);
+        long milesGlobal = 0;
         for (AFV v : vehicles){
-            str.append("\n\t and route for vehicle ").append(v.ID).append(" with route [D");
+            str.append("\n\t {and route for vehicle ").append(v.ID).append(" with route [D");
             for (Place r : v.getRoute()){
                 str.append(" -> ").append(r.getID());
             }
-            str.append("]");
+            str.append("], driven : ");
+            str.append(v.getTourLength());
+            str.append(" Miles}");
+            milesGlobal = milesGlobal + v.getTourLength();
         }
+        str.append("\nThis iteration drove: ").append(milesGlobal).append(" Miles in general}");
         String location = "out/out.txt";
         BufferedWriter writer = new BufferedWriter(new FileWriter(location, true));
         writer.append(str);
