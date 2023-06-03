@@ -46,7 +46,7 @@ public class BruteForce extends Thread{
                 }
                 this.globalTime = globalTime.plusHours(v.getTourTime().getHour()).plusMinutes(v.getTourTime().getMinute());
             }
-            Boolean allFinished = true;
+            boolean allFinished = true;
             for (AFV v : vehicles) {
                 if (!v.getFinished()) {
                     allFinished = false;

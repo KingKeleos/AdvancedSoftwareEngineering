@@ -16,7 +16,7 @@ public class Logger {
         for (AFV v : vehicles){
             str.append("\n\t and route for vehicle ").append(v.ID).append(" with route [D");
             for (Place r : v.getRoute()){
-                str.append(" -> " + r.getID());
+                str.append(" -> ").append(r.getID());
             }
             str.append("]");
         }
