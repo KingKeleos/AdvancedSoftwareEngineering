@@ -13,25 +13,27 @@ import java.util.Random;
 public class AFV extends Thread implements Driver {
     public int ID;
     private double tank;
+    private Depot depot;
     private final List<Place> placeList;
     private final List<Customer> customers = new ArrayList<>();
     private final List<Fuelstation> fuelstations;
     private Place currentPosition;
     private final List<Place> route = new ArrayList<>();
-    private Customer goal;
+    private Place goal;
     private LocalTime tourTime;
-    private Random rand = new Random();
+    private final Random rand = new Random();
     private Boolean finished = false;
 
     public AFV(int ID, List<Place> places, Depot depot, List<Fuelstation> fuelstations){
         this.ID = ID;
-        this.currentPosition = depot;
+        this.depot = depot;
         this.tank = Configurations.AFV.maxVolume;
         // Vehicles can travel through all places
         this.placeList = places;
         // Refuel Time at depot as start time from specification
         this.tourTime = LocalTime.of(0, 15);
         this.fuelstations = fuelstations;
+        this.currentPosition = this.depot;
     }
 
     @Override
@@ -69,9 +71,6 @@ public class AFV extends Thread implements Driver {
 
     @Override
     public void selectCustomer() {
-        if (this.tourTime.isAfter(LocalTime.of(10,45))){
-            return;
-        }
         if (this.goal != null){
             return;
         }
@@ -103,6 +102,9 @@ public class AFV extends Thread implements Driver {
                 selectFuelstation();
             }
         }
+        if (customers.size() == 0){
+            this.returnToDepot();
+        }
         if (this.tourTime.isAfter(LocalTime.of(10,45))){
             return;
         }
@@ -110,18 +112,26 @@ public class AFV extends Thread implements Driver {
     }
 
     public void selectFuelstation(){
-        if (this.tourTime.isAfter(LocalTime.of(10,45))){
-            return;
-        }
         for (Fuelstation f : fuelstations){
             double rest = this.currentPosition.getDistance(f) * Configurations.AFV.consumptionPerMile;
             if (rest < this.tank) {
                 this.drive(f);
                 f.Refuel(this);
-                this.route.add(f);
                 this.tourTime = this.tourTime.plusMinutes(15);
                 return;
             }
+        }
+    }
+
+    public void returnToDepot(){
+        this.goal = this.depot;
+
+        double distance = this.currentPosition.getDistance(this.goal);
+        if (distance  * Configurations.AFV.consumptionPerMile < this.tank){
+                this.drive(this.goal);
+        }
+        else {
+            selectFuelstation();
         }
     }
 
