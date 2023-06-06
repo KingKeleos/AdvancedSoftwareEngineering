@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class GreenVehicle {
@@ -26,27 +27,38 @@ public class GreenVehicle {
         int numThreads = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
-        for (int i = 0; i < 10000000; i++) {
+        for (int i = 0; i < 1000; i++) {
             executor.submit(() -> {
                 BruteForce bruteForce = new BruteForce(places, customers, rand.nextInt(20));
                 bruteForce.run();
-                LocalTime bruteForceTime = bruteForce.getGlobal();
-                List<AFV> bruteForceVehicles = bruteForce.getVehicles();
+                        LocalTime bruteForceTime = bruteForce.getGlobal();
+                        List<AFV> bruteForceVehicles = bruteForce.getVehicles();
 
-                synchronized (GreenVehicle.class) {
-                    if (bruteForceTime.isBefore(bestTime[0])) {
-                        bestTime[0] = bruteForceTime;
-                        try {
-                            logger.log(bestTime[0], bruteForceVehicles);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        synchronized (GreenVehicle.class) {
+                            if (bruteForceTime.isBefore(bestTime[0])) {
+                                bestTime[0] = bruteForceTime;
+                                try {
+                                    logger.log(bestTime[0], bruteForceVehicles);
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
                         }
-                    }
-                }
             });
         }
 
-        executor.shutdown();
-        executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        while(true){
+            var threadpoolExecutor = (ThreadPoolExecutor) executor;
+            System.out.println(threadpoolExecutor.getActiveCount());
+            System.out.println(threadpoolExecutor.getCompletedTaskCount());
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        //executor.shutdown();
+        //executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
     }
 }
