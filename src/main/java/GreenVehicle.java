@@ -18,7 +18,7 @@ public class GreenVehicle {
     private static Random rand = new Random();
 
     // Start Point of the project
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws InterruptedException {
         // Initiate start of Project
         List<Place> places = Importer.importFile();
         List<Customer> customers = Place.getCusomers(places);

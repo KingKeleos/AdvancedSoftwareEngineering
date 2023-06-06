@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class BruteForce extends Thread{
+public class BruteForce implements Runnable{
     private final List<AFV> vehicles = new ArrayList<>();
     private final int amount;
     private final List<Place> places;
@@ -27,16 +27,17 @@ public class BruteForce extends Thread{
 
     @Override
     public void run() {
-            createVehicles(this.amount, this.places);
-            this.assigned.addAll(this.customers);
-            while (this.assigned.size() > 0) {
-                for (int j = 0; j < amount; j++) {
-                    if (this.assigned.size() > 0) {
-                        this.vehicles.get(j).getCustomers().add(this.assigned.remove(this.rand.nextInt(this.assigned.size())));
-                    }
+        createVehicles(this.amount, this.places);
+        this.assigned.addAll(this.customers);
+        while (this.assigned.size() > 0 && this.customers.size() > 0) {
+        for (int j = 0; j < amount; j++) {
+            if (this.assigned.size() > 0 && this.customers.size() > 0) {
+                this.vehicles.get(j).getCustomers().add(this.assigned.remove(this.rand.nextInt(this.assigned.size())));
                 }
             }
-            LocalTime globalTime = LocalTime.of(0, 0);
+        }
+
+        LocalTime globalTime = LocalTime.of(0, 0);
             for (AFV v : vehicles) {
                 v.start();
                 try {
