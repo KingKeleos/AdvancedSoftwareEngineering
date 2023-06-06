@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AFV extends Thread implements Driver {
+public class AFV implements Driver {
     public int ID;
     private double tank;
     private final Depot depot;
@@ -91,7 +91,6 @@ public class AFV extends Thread implements Driver {
         return finished;
     }
 
-    @Override
     public void run(){
         while (customers.size() > 0 && this.tourTime.isBefore(LocalTime.of(10,45))){
             this.goal = null;
