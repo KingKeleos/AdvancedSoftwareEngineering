@@ -10,25 +10,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AFV extends Thread implements Driver {
+public class AFV implements Driver {
     public int ID;
     private double tank;
+    private final Depot depot;
     private final List<Customer> customers = new ArrayList<>();
     private final List<Fuelstation> fuelstations;
     private Place currentPosition;
     private final List<Place> route = new ArrayList<>();
-    private Customer goal;
+    private Place goal;
     private LocalTime tourTime;
-    private Random rand = new Random();
+    private final Random rand = new Random();
     private Boolean finished = false;
+    private long tourLength;
 
     public AFV(int ID, Depot depot, List<Fuelstation> fuelstations){
         this.ID = ID;
-        this.currentPosition = depot;
+        this.depot = depot;
         this.tank = Configurations.AFV.maxVolume;
         // Refuel Time at depot as start time from specification
         this.tourTime = LocalTime.of(0, 15);
         this.fuelstations = fuelstations;
+        this.currentPosition = this.depot;
     }
 
     @Override
@@ -39,6 +42,7 @@ public class AFV extends Thread implements Driver {
     @Override
     public void drive(Place next) {
         double distance = this.currentPosition.getDistance(goal);
+        this.tourLength = (long)distance;
         this.consume(distance);
         this.tourTime = this.tourTime.plusMinutes((long)distance / Configurations.AFV.maxSpeed);
         this.currentPosition = next;
@@ -65,9 +69,6 @@ public class AFV extends Thread implements Driver {
 
     @Override
     public void selectCustomer() {
-        if (this.tourTime.isAfter(LocalTime.of(10,45))){
-            return;
-        }
         if (this.goal != null){
             return;
         }
@@ -90,7 +91,6 @@ public class AFV extends Thread implements Driver {
         return finished;
     }
 
-    @Override
     public void run(){
         while (customers.size() > 0 && this.tourTime.isBefore(LocalTime.of(10,45))){
             this.goal = null;
@@ -100,6 +100,11 @@ public class AFV extends Thread implements Driver {
             }
             this.checkCustomer();
         }
+        if (customers.size() == 0){
+            while (this.currentPosition != this.depot){
+                this.returnToDepot();
+            }
+        }
         if (this.tourTime.isAfter(LocalTime.of(10,45))){
             return;
         }
@@ -107,9 +112,6 @@ public class AFV extends Thread implements Driver {
     }
 
     public void selectFuelstation(){
-        if (this.tourTime.isAfter(LocalTime.of(10,45))){
-            return;
-        }
         for (Fuelstation f : fuelstations){
             double rest = this.currentPosition.getDistance(f) * Configurations.AFV.consumptionPerMile;
             if (rest < this.tank) {
@@ -121,8 +123,24 @@ public class AFV extends Thread implements Driver {
         }
     }
 
+    public void returnToDepot(){
+        this.goal = this.depot;
+
+        double distance = this.currentPosition.getDistance(this.goal);
+        if (distance  * Configurations.AFV.consumptionPerMile < this.tank){
+                this.drive(this.goal);
+        }
+        else {
+            selectFuelstation();
+        }
+    }
+
     public LocalTime getTourTime(){
         return this.tourTime;
+    }
+
+    public long getTourLength(){
+        return tourLength;
     }
 
     public List<Place> getRoute(){

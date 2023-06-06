@@ -7,9 +7,11 @@ import Places.Place;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Random;
 
 public class GreenVehicle {
     private static final Logger logger = new Logger();
+    private static Random rand = new Random();
 
     //Start Point of the project
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -20,7 +22,7 @@ public class GreenVehicle {
 
         // Start the Algorithms:
         for (int i=0; i<10000000; i++) {
-            BruteForce bruteForce = new BruteForce(places, customers, 5);
+            BruteForce bruteForce = new BruteForce(places, customers, rand.nextInt(20));
             bruteForce.start();
             bruteForce.join();
             if (bruteForce.getGlobal().isBefore(bestTime)){
