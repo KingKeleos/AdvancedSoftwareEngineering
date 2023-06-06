@@ -9,8 +9,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
 
-public class BruteForce implements Runnable{
+public class BruteForce implements Callable <List<Place>> {
     private final List<AFV> vehicles = new ArrayList<>();
     private final int amount;
     private final List<Place> places;
@@ -27,8 +28,9 @@ public class BruteForce implements Runnable{
     }
 
     @Override
-    public void run() {
+    public List<Place> call() {
             createVehicles(this.amount, this.places);
+            List<Place> globalRoute = new ArrayList<>();
             this.assigned.addAll(this.customers);
             while (this.assigned.size() > 0 && this.customers.size() > 0) {
             for (int j = 0; j < amount; j++) {
@@ -45,6 +47,7 @@ public class BruteForce implements Runnable{
                     allFinished = false;
                     break;
                 } else {
+                    globalRoute.addAll(v.getRoute());
                     System.out.println(v.getRoute());
                     this.globalTime = globalTime.plusHours(v.getTourTime().getHour()).plusMinutes(v.getTourTime().getMinute());
                 }
@@ -55,6 +58,7 @@ public class BruteForce implements Runnable{
                 System.out.println(this + ": Has not finished all routes!");
             }
             this.done = true;
+            return globalRoute;
     }
 
     public LocalTime getGlobal(){

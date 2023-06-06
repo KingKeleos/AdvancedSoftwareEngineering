@@ -1,0 +1,25 @@
+{Route with time: 00:00
+	 {and route for vehicle 0 with route [D -> D -> C9 -> C9 -> F5 -> C17], driven : 0 Miles}
+	 {and route for vehicle 1 with route [D], driven : 0 Miles}
+	 {and route for vehicle 2 with route [D], driven : 0 Miles}
+	 {and route for vehicle 3 with route [D], driven : 0 Miles}
+	 {and route for vehicle 4 with route [D], driven : 0 Miles}
+	 {and route for vehicle 5 with route [D], driven : 0 Miles}
+	 {and route for vehicle 6 with route [D], driven : 0 Miles}
+	 {and route for vehicle 7 with route [D], driven : 0 Miles}
+	 {and route for vehicle 8 with route [D], driven : 0 Miles}
+This iteration drove: 0 Miles in general}
+{Route with time: 00:00
+	 {and route for vehicle 0 with route [D -> D -> F1 -> F9 -> F10 -> C1], driven : 0 Miles}
+	 {and route for vehicle 1 with route [D], driven : 0 Miles}
+This iteration drove: 0 Miles in general}
+{Route with time: 00:00
+	 {and route for vehicle 0 with route [D -> D -> C18 -> F2 -> F4 -> C16 -> F2], driven : 0 Miles}
+	 {and route for vehicle 1 with route [D], driven : 0 Miles}
+	 {and route for vehicle 2 with route [D], driven : 0 Miles}
+	 {and route for vehicle 3 with route [D], driven : 0 Miles}
+	 {and route for vehicle 4 with route [D], driven : 0 Miles}
+	 {and route for vehicle 5 with route [D], driven : 0 Miles}
+	 {and route for vehicle 6 with route [D], driven : 0 Miles}
+	 {and route for vehicle 7 with route [D], driven : 0 Miles}
+This iteration drove: 0 Miles in general}

@@ -61,6 +61,7 @@ public class AFV {
 
     public void run(){
         this.route.add(this.depot);
+        int i = 0;
         while (this.tourTime.isBefore(LocalTime.of(10,45))){
             if (customers.size() == 0 && currentPosition.getClass() == Depot.class){
                 this.finished = true;
@@ -75,9 +76,9 @@ public class AFV {
                 return;
             }
 
-            double minutes = distance / Configurations.AFV.maxSpeed;
+            double hours = distance / Configurations.AFV.maxSpeed;
 
-            this.tourTime = this.tourTime.plusHours((long)(minutes));
+            this.tourTime = this.tourTime.plusHours((long)(hours));
             this.currentPosition = this.goal;
             this.route.add(this.currentPosition);
             this.checkCustomer();
