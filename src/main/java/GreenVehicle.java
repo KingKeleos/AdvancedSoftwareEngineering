@@ -24,7 +24,7 @@ public class GreenVehicle {
         int numThreads = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1000000000; i++) {
             BruteForce bruteForce = new BruteForce(places, customers, rand.nextInt(20));
             Future<List<Place>> future = executor.submit(bruteForce);
 

@@ -33,7 +33,7 @@ public class BruteForce implements Callable <List<Place>> {
             List<Place> globalRoute = new ArrayList<>();
             this.assigned.addAll(this.customers);
             while (this.assigned.size() > 0 && this.customers.size() > 0) {
-            for (int j = 0; j < amount; j++) {
+            for (int j = 0; j <= amount; j++) {
                 if (this.assigned.size() > 0 && this.customers.size() > 0) {
                     this.vehicles.get(j).getCustomers().add(this.assigned.remove(this.rand.nextInt(this.assigned.size())));
                     }
@@ -74,7 +74,7 @@ public class BruteForce implements Callable <List<Place>> {
     }
 
     private void createVehicles(int amount, List<Place> places){
-        for (int i = 0; i < amount; i++){
+        for (int i = 0; i <= amount; i++){
             this.vehicles.add(new AFV(i, Place.getDepot(places), Place.getFuelstations(places), places));
         }
     }
