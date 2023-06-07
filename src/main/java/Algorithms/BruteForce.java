@@ -3,6 +3,7 @@ package Algorithms;
 import Logging.Logger;
 import Places.Customer;
 import Places.Place;
+import Result.Result;
 import Vehicle.AFV;
 
 import java.time.LocalTime;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
-public class BruteForce implements Callable <List<Place>> {
+public class BruteForce implements Callable <Result> {
     private final List<AFV> vehicles = new ArrayList<>();
     private final int amount;
     private final List<Place> places;
@@ -28,7 +29,7 @@ public class BruteForce implements Callable <List<Place>> {
     }
 
     @Override
-    public List<Place> call() {
+    public Result call() {
             createVehicles(this.amount, this.places);
             List<Place> globalRoute = new ArrayList<>();
             this.assigned.addAll(this.customers);
@@ -43,34 +44,11 @@ public class BruteForce implements Callable <List<Place>> {
             boolean allFinished = true;
             for (AFV v : vehicles) {
                 v.run();
-                if (!v.getFinished()) {
-                    allFinished = false;
-                    break;
-                } else {
-                    globalRoute.addAll(v.getRoute());
-                    System.out.println(v.getRoute());
-                    this.globalTime = globalTime.plusHours(v.getTourTime().getHour()).plusMinutes(v.getTourTime().getMinute());
-                }
-            }
-            if (allFinished){
-                System.out.println(this + ": Has finished all routes!");
-            } else {
-                System.out.println(this + ": Has not finished all routes!");
+                globalRoute.addAll(v.getRoute());
+                this.globalTime = globalTime.plusHours(v.getTourTime().getHour()).plusMinutes(v.getTourTime().getMinute());
             }
             this.done = true;
-            return globalRoute;
-    }
-
-    public LocalTime getGlobal(){
-        return this.globalTime;
-    }
-
-    public boolean isDone() {
-        return done;
-    }
-
-    public List<AFV> getVehicles(){
-        return this.vehicles;
+            return new Result(globalTime, vehicles);
     }
 
     private void createVehicles(int amount, List<Place> places){
