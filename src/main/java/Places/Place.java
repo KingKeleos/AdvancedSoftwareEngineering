@@ -2,7 +2,7 @@ package Places;
 
 import java.util.*;
 
-public abstract class Place  implements PlaceInterface{
+public abstract class Place{
     private final String ID;
     private final double longitude;
     private final double latitude;
@@ -25,17 +25,6 @@ public abstract class Place  implements PlaceInterface{
         return this.latitude;
     }
 
-    @Override
-    public double getDistance(Place place) {
-        double lat = place.getLatitude();
-        double lon = place.getLongitude();
-        double radiusOfEarth = 3959; // miles, 6371km;
-        double dLat = Math.toRadians(lat-this.latitude);
-        double dLon = Math.toRadians(lon-this.longitude);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(Math.toRadians(this.latitude)) * Math.cos(Math.toRadians(lat)) * Math.sin(dLon/2) * Math.sin(dLon/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return radiusOfEarth * c;
-    }
 
     public static List<Customer> getCusomers(List<Place> places){
         List <Customer> customers = new ArrayList<>();
@@ -56,13 +45,14 @@ public abstract class Place  implements PlaceInterface{
         return null;
     }
 
-    public static List<Fuelstation> getFuelstations(List<Place> places){
-        List <Fuelstation> fuelstations = new ArrayList<>();
-        for (Place p : places){
-            if (p.getClass() == Fuelstation.class){
-                fuelstations.add((Fuelstation) p);
-            }
-        }
-        return fuelstations;
+    public double getDistance(Place place1) {
+        double lat1 = place1.getLatitude();
+        double lon1 = place1.getLongitude();
+        double radiusOfEarth = 3959; // miles, 6371km;
+        double dLat = Math.toRadians(lat1-this.latitude);
+        double dLon = Math.toRadians(lon1-this.longitude);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(Math.toRadians(this.longitude)) * Math.cos(Math.toRadians(lat1)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return radiusOfEarth * c;
     }
 }
