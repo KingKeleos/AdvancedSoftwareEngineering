@@ -25,7 +25,7 @@ public class Logger {
             milesGlobal = milesGlobal + v.getTourLength();
         }
         str.append("\nThis iteration drove: ").append(milesGlobal).append(" Miles in general}");
-        String location = "out/out.txt";
+        String location = "data/result.txt";
         BufferedWriter writer = new BufferedWriter(new FileWriter(location, true));
         writer.append(str);
         writer.newLine();

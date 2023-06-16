@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AFV implements Driver {
+public class AFV {
     public int ID;
     private double tank;
     private final Depot depot;
     private final List<Customer> customers = new ArrayList<>();
+    private final List<Place> places;
     private final List<Fuelstation> fuelstations;
     private Place currentPosition;
     private final List<Place> route = new ArrayList<>();
@@ -24,7 +25,7 @@ public class AFV implements Driver {
     private Boolean finished = false;
     private long tourLength;
 
-    public AFV(int ID, Depot depot, List<Fuelstation> fuelstations){
+    public AFV(int ID, Depot depot, List<Fuelstation> fuelstations, List<Place> places){
         this.ID = ID;
         this.depot = depot;
         this.tank = Configurations.AFV.maxVolume;
@@ -32,106 +33,55 @@ public class AFV implements Driver {
         this.tourTime = LocalTime.of(0, 15);
         this.fuelstations = fuelstations;
         this.currentPosition = this.depot;
+        this.places = places;
     }
 
-    @Override
-    public void consume(double distance) {
-        this.tank = this.tank - (distance * Configurations.AFV.consumptionPerMile);
-    }
-
-    @Override
-    public void drive(Place next) {
-        double distance = this.currentPosition.getDistance(goal);
-        this.tourLength = (long)distance;
-        this.consume(distance);
-        this.tourTime = this.tourTime.plusMinutes((long)distance / Configurations.AFV.maxSpeed);
-        this.currentPosition = next;
-        this.route.add(this.currentPosition);
-    }
-
-    @Override
     public void refuel() {
         this.tank = Configurations.AFV.maxVolume;
     }
 
-    @Override
     public void checkCustomer() {
         if (this.currentPosition.getClass() == Customer.class){
             this.tourTime = this.tourTime.plusMinutes(30);
             this.customers.remove(this.currentPosition);
+        } else if (this.currentPosition.getClass() == Fuelstation.class){
+            this.tourTime = this.tourTime.plusMinutes(15);
+            this.refuel();
         }
     }
 
-    @Override
     public List<Customer> getCustomers() {
         return this.customers;
     }
 
-    @Override
-    public void selectCustomer() {
-        if (this.goal != null){
-            return;
-        }
-        this.goal = customers.get(rand.nextInt(this.customers.size()));
-        double distance = this.currentPosition.getDistance(this.goal);
-        if (distance  * Configurations.AFV.consumptionPerMile < this.tank){
-            for (Fuelstation f : this.fuelstations){
-                double rest = distance  * Configurations.AFV.consumptionPerMile;
-                double fuelDistance = this.goal.getDistance(f);
-                if (fuelDistance  * Configurations.AFV.consumptionPerMile < (this.tank - rest)){
-                    this.drive(this.goal);
-                    return;
-                }
-            }
-            selectFuelstation();
-        }
-    }
 
     public Boolean getFinished() {
         return finished;
     }
 
     public void run(){
-        while (customers.size() > 0 && this.tourTime.isBefore(LocalTime.of(10,45))){
-            this.goal = null;
-            this.selectCustomer();
-            if(this.tank < this.currentPosition.getDistance(this.goal) * Configurations.AFV.consumptionPerMile){
-                selectFuelstation();
-            }
-            this.checkCustomer();
-        }
-        if (customers.size() == 0){
-            while (this.currentPosition != this.depot){
-                this.returnToDepot();
-            }
-        }
-        if (this.tourTime.isAfter(LocalTime.of(10,45))){
-            return;
-        }
-        this.finished = true;
-    }
-
-    public void selectFuelstation(){
-        for (Fuelstation f : fuelstations){
-            double rest = this.currentPosition.getDistance(f) * Configurations.AFV.consumptionPerMile;
-            if (rest < this.tank) {
-                this.drive(f);
-                f.Refuel(this);
-                this.tourTime = this.tourTime.plusMinutes(15);
+        this.route.add(this.depot);
+        int i = 0;
+        while (this.tourTime.isBefore(LocalTime.of(10,45))){
+            if (customers.size() == 0 && currentPosition.getClass() == Depot.class){
+                this.finished = true;
                 return;
             }
-        }
-    }
 
-    public void returnToDepot(){
-        this.goal = this.depot;
+            this.goal = places.get(rand.nextInt(this.places.size()));
+            double distance = this.currentPosition.getDistance(this.goal);
 
-        double distance = this.currentPosition.getDistance(this.goal);
-        if (distance  * Configurations.AFV.consumptionPerMile < this.tank){
-                this.drive(this.goal);
-        }
-        else {
-            selectFuelstation();
+            this.tank -= distance * Configurations.AFV.consumptionPerMile;
+            if (this.tank < 0){
+                return;
+            }
+
+            double hours = distance / Configurations.AFV.maxSpeed;
+
+            this.tourTime = this.tourTime.plusHours((long)(hours));
+            this.currentPosition = this.goal;
+            this.route.add(this.currentPosition);
+            this.checkCustomer();
         }
     }
 
