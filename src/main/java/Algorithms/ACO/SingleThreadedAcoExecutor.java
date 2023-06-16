@@ -1,5 +1,6 @@
 package Algorithms.ACO;
 
+import Configurations.ACOConfiguration;
 import Importer.Dataset;
 import Importer.Node;
 import Route.Route;
@@ -52,8 +53,8 @@ public class SingleThreadedAcoExecutor extends AcoExecutor {
 
                 totalTravelTime = totalTravelTime + route.getTravelTime();
 
-                isValid = isValid && (route.getTravelTime() <= Configuration.INSTANCE.MAX_TOUR_LENGTH);
-                if (route.getTravelTime() > Configuration.INSTANCE.MAX_TOUR_LENGTH) {
+                isValid = isValid && (route.getTravelTime() <= ACOConfiguration.INSTANCE.MAX_TOUR_LENGTH);
+                if (route.getTravelTime() > ACOConfiguration.INSTANCE.MAX_TOUR_LENGTH) {
                     break;
                 }
             }

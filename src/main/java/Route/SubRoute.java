@@ -1,6 +1,6 @@
 package Route;
 
-import Algorithms.ACO.Configuration;
+import Configurations.ACOConfiguration;
 import Importer.Node;
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class SubRoute {
     public static ArrayList<ArrayList<Node>> generateSubRoutes(Node depot, ArrayList<Node> nodes, int count) {
         double anglePerSection = 360.0 / count;
-        double rotationOffset = Configuration.INSTANCE.randomGenerator.nextDouble() * 360;
+        double rotationOffset = ACOConfiguration.INSTANCE.randomGenerator.nextDouble() * 360;
 
         // initialize arraylist of arraylists of subroutes
         ArrayList<ArrayList<Node>> subRoutes = new ArrayList<>();

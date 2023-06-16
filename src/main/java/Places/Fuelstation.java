@@ -7,7 +7,4 @@ public class Fuelstation extends Place {
         super(ID, longitude, latitude);
     }
 
-    public void Refuel(AFV vehicle){
-        vehicle.refuel();
-    }
 }

@@ -197,7 +197,7 @@ public class Dataset {
 
     private ArrayList<Double> calcDistancesArray(ArrayList<Node> routeOrig) {
 
-        ArrayList<Double> distances = new ArrayList<Double>();
+        ArrayList<Double> distances = new ArrayList<>();
         for (int i = 0; i <= routeOrig.size() - 1; i++) {
             if (i != routeOrig.size() - 1)
                 distances.add(calculateDistanceBetweenNodes(routeOrig.get(i), routeOrig.get(i + 1)));
@@ -208,7 +208,7 @@ public class Dataset {
     }
 
     private ArrayList<Node> createGasStationList() {
-        ArrayList<Node> gasStations = new ArrayList<Node>(0);
+        ArrayList<Node> gasStations = new ArrayList<>(0);
         for (Node node : this.nodes) {
             if (node.getType().equals("f")) {
                 gasStations.add(node);

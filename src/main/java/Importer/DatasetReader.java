@@ -11,7 +11,7 @@ public class DatasetReader {
     String datasetPath;
 
     public DatasetReader() {
-        this.datasetPath = Paths.get("").toAbsolutePath().normalize().toString() + "/data/";;
+        this.datasetPath = Paths.get("").toAbsolutePath().normalize()+ "/data/";
     }
 
     public Dataset createDataset(String filename) {
@@ -30,7 +30,7 @@ public class DatasetReader {
 
             try {
                 reader = new BufferedReader(new FileReader(file));
-                ArrayList<Node> nodes = new ArrayList<Node>(0);
+                ArrayList<Node> nodes = new ArrayList<>(0);
                 String line = null;
                 while ((line = reader.readLine()) != null) {
                     if (!line.contains("Type") || !line.contains("Longitude")) {

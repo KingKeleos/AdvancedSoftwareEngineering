@@ -1,8 +1,8 @@
-package Algorithms.ACO;
+package Configurations;
 
 import ec.util.MersenneTwisterFast;
 
-public enum Configuration {
+public enum ACOConfiguration {
     INSTANCE;
 
     // gvrp parameter

@@ -1,5 +1,6 @@
 package Algorithms.ACO;
 
+import Configurations.ACOConfiguration;
 import Importer.Dataset;
 import Importer.Node;
 import Route.Route;
@@ -28,7 +29,7 @@ public class AntColonyOptimization {
         this.graph = generateDistanceMatrix(references);
         this.trails = new double[references.size()][references.size()];
         this.probabilities = new double[references.size()];
-        int antCount = (int) (references.size() * Configuration.INSTANCE.antFactor);
+        int antCount = (int) (references.size() * ACOConfiguration.INSTANCE.antFactor);
 
         if (antCount == 0)
             this.numberOfAnts = references.size();
@@ -78,7 +79,7 @@ public class AntColonyOptimization {
         setupAnts();
         clearTrails();
 
-        for (int i = 0; i < Configuration.INSTANCE.maximumIterations; i++) {
+        for (int i = 0; i < ACOConfiguration.INSTANCE.maximumIterations; i++) {
             moveAnts();
             updateTrails();
             updateBest();
@@ -107,8 +108,8 @@ public class AntColonyOptimization {
     }
 
     private int selectNextCity(Ant ant) {
-        int t = Configuration.INSTANCE.randomGenerator.nextInt(references.size() - currentIndex);
-        if (Configuration.INSTANCE.randomGenerator.nextDouble() < Configuration.INSTANCE.randomFactor) {
+        int t = ACOConfiguration.INSTANCE.randomGenerator.nextInt(references.size() - currentIndex);
+        if (ACOConfiguration.INSTANCE.randomGenerator.nextDouble() < ACOConfiguration.INSTANCE.randomFactor) {
             int cityIndex = -999;
 
             for (int i = 0; i < references.size(); i++) {
@@ -131,7 +132,7 @@ public class AntColonyOptimization {
 
         calculateProbabilities(ant);
 
-        double randomNumber = Configuration.INSTANCE.randomGenerator.nextDouble();
+        double randomNumber = ACOConfiguration.INSTANCE.randomGenerator.nextDouble();
         double total = 0;
 
         for (int i = 0; i < references.size(); i++) {
@@ -150,7 +151,7 @@ public class AntColonyOptimization {
 
         for (int l = 0; l < references.size(); l++) {
             if (!ant.visited(l)) {
-                pheromone += Math.pow(trails[i][l], Configuration.INSTANCE.alpha) * Math.pow(1.0 / graph[i][l], Configuration.INSTANCE.beta);
+                pheromone += Math.pow(trails[i][l], ACOConfiguration.INSTANCE.alpha) * Math.pow(1.0 / graph[i][l], ACOConfiguration.INSTANCE.beta);
             }
         }
 
@@ -158,7 +159,7 @@ public class AntColonyOptimization {
             if (ant.visited(j)) {
                 probabilities[j] = 0.0;
             } else {
-                double numerator = Math.pow(trails[i][j], Configuration.INSTANCE.alpha) * Math.pow(1.0 / graph[i][j], Configuration.INSTANCE.beta);
+                double numerator = Math.pow(trails[i][j], ACOConfiguration.INSTANCE.alpha) * Math.pow(1.0 / graph[i][j], ACOConfiguration.INSTANCE.beta);
                 probabilities[j] = numerator / pheromone;
             }
         }
@@ -167,13 +168,13 @@ public class AntColonyOptimization {
     private void updateTrails() {
         for (int i = 0; i < references.size(); i++) {
             for (int j = 0; j < references.size(); j++) {
-                trails[i][j] *= Configuration.INSTANCE.evaporation;
+                trails[i][j] *= ACOConfiguration.INSTANCE.evaporation;
             }
         }
 
         for (Ant ant : ants) {
             if (ant.trailCost(references) != null) {
-                double contribution = Configuration.INSTANCE.q / ant.trailCost(references).getTravelTime();
+                double contribution = ACOConfiguration.INSTANCE.q / ant.trailCost(references).getTravelTime();
                 for (int i = 0; i < references.size() - 1; i++) {
                     trails[ant.trail[i]][ant.trail[i + 1]] += contribution;
                 }
@@ -203,7 +204,7 @@ public class AntColonyOptimization {
     private void clearTrails() {
         for (int i = 0; i < references.size(); i++) {
             for (int j = 0; j < references.size(); j++) {
-                trails[i][j] = Configuration.INSTANCE.initialPheromoneValue;
+                trails[i][j] = ACOConfiguration.INSTANCE.initialPheromoneValue;
             }
         }
     }
