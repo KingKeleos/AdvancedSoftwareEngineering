@@ -10,9 +10,12 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.google.ortools:ortools-java:9.6.2534'
+    implementation 'com.farao-community.ortools:ortools-java:7.8.9999'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation group: 'fr.irit.smac.thirdparty.edu.gmu.cs', name: 'mason', version: '18'
+    //implementation group: 'com.google.ortools', name: 'ortools-java', version: '9.6.2534'
 }
 
 test {
